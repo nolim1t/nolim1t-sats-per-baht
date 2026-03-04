@@ -14,7 +14,7 @@ const Index = () => {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background">
       <div className="text-center space-y-4">
-        <h1 className="text-4xl font-bold">Satoshi / THB</h1>
+        <h1 className="text-4xl font-bold">THB → Satoshis</h1>
 
         {loading && <p className="text-muted-foreground">Loading…</p>}
         {error && <p className="text-destructive">Error: {error}</p>}
@@ -22,10 +22,10 @@ const Index = () => {
         {data && (
           <>
             <p className="text-5xl font-mono font-semibold">
-              ฿{(data.bitcoin.thb / 100_000_000).toFixed(4)}
+              {Math.round(100_000_000 / data.bitcoin.thb).toLocaleString()} sats
             </p>
             <p className="text-xs text-muted-foreground">
-              1 sat = {(data.bitcoin.thb / 100_000_000).toFixed(4)} THB
+              1 THB = {Math.round(100_000_000 / data.bitcoin.thb).toLocaleString()} satoshis
             </p>
             <p className="text-sm text-muted-foreground">
               {fromCache ? "Served from cache" : "Fresh fetch"}
