@@ -1,11 +1,41 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useCachedFetch } from "@/hooks/useCachedFetch";
+
+interface CoinGeckoPrice {
+  bitcoin: { thb: number };
+}
+
+const COINGECKO_URL =
+  "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=thb";
 
 const Index = () => {
+  const { data, loading, error, fromCache, refresh } =
+    useCachedFetch<CoinGeckoPrice>(COINGECKO_URL, "btc-thb-price");
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
+      <div className="text-center space-y-4">
+        <h1 className="text-4xl font-bold">Bitcoin / THB</h1>
+
+        {loading && <p className="text-muted-foreground">Loading…</p>}
+        {error && <p className="text-destructive">Error: {error}</p>}
+
+        {data && (
+          <>
+            <p className="text-5xl font-mono font-semibold">
+              ฿{data.bitcoin.thb.toLocaleString()}
+            </p>
+            <p className="text-sm text-muted-foreground">
+              {fromCache ? "Served from cache" : "Fresh fetch"}
+            </p>
+          </>
+        )}
+
+        <button
+          onClick={refresh}
+          className="mt-4 rounded-md bg-primary px-4 py-2 text-sm text-primary-foreground hover:opacity-90 transition-opacity"
+        >
+          Force Refresh
+        </button>
       </div>
     </div>
   );
