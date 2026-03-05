@@ -11,7 +11,7 @@ interface CurrencyTabProps {
 }
 
 const CurrencyTab = ({ currency, currencyCode, apiUrl, cacheKey }: CurrencyTabProps) => {
-  const { data, loading, error, fromCache, refresh } =
+  const { data, loading, error, warning, fromCache, refresh } =
     useCachedFetch<Record<string, Record<string, number>>>(apiUrl, cacheKey);
   const [amount, setAmount] = useState("");
 
@@ -35,7 +35,12 @@ const CurrencyTab = ({ currency, currencyCode, apiUrl, cacheKey }: CurrencyTabPr
   return (
     <div className="space-y-6">
       {loading && <p className="text-muted-foreground">Loading…</p>}
-      {error && <p className="text-destructive">Error: {error}</p>}
+      {error && <p className="text-destructive text-sm">{error}</p>}
+      {warning && (
+        <p className="text-sm px-3 py-2 rounded-md bg-accent text-accent-foreground">
+          {warning}
+        </p>
+      )}
 
       {data && (
         <>
