@@ -13,6 +13,7 @@ export function useCachedFetch<T>(url: string, cacheKey: string) {
   const [error, setError] = useState<string | null>(null);
   const [fromCache, setFromCache] = useState(false);
   const [warning, setWarning] = useState<string | null>(null);
+  const [cacheTimestamp, setCacheTimestamp] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -29,6 +30,7 @@ export function useCachedFetch<T>(url: string, cacheKey: string) {
           if (cachedData && Date.now() - cachedData.timestamp < CACHE_DURATION) {
             setData(cachedData.data);
             setFromCache(true);
+            setCacheTimestamp(cachedData.timestamp);
             setLoading(false);
             return;
           }
@@ -50,11 +52,13 @@ export function useCachedFetch<T>(url: string, cacheKey: string) {
 
         setData(result);
         setFromCache(false);
+        setCacheTimestamp(Date.now());
       } catch (err) {
         // Fall back to any cached data (even expired)
         if (cachedData) {
           setData(cachedData.data);
           setFromCache(true);
+          setCacheTimestamp(cachedData.timestamp);
           setWarning("⚠️ API unavailable — showing cached data. Rates may be outdated! 🕐");
         } else {
           // Try localStorage one more time for any existing data
@@ -64,6 +68,7 @@ export function useCachedFetch<T>(url: string, cacheKey: string) {
               const parsed: CachedData<T> = JSON.parse(cached);
               setData(parsed.data);
               setFromCache(true);
+              setCacheTimestamp(parsed.timestamp);
               setWarning("⚠️ API unavailable — showing cached data. Rates may be outdated! 🕐");
             } else {
               setError("🚫 API is unavailable and no cached data found. Please try again later! 🔄");
@@ -94,6 +99,7 @@ export function useCachedFetch<T>(url: string, cacheKey: string) {
       );
       setData(result);
       setFromCache(false);
+      setCacheTimestamp(Date.now());
       setError(null);
     } catch (err) {
       // On refresh failure, try to restore from cache
@@ -116,5 +122,5 @@ export function useCachedFetch<T>(url: string, cacheKey: string) {
     }
   };
 
-  return { data, loading, error, warning, fromCache, refresh };
+  return { data, loading, error, warning, fromCache, cacheTimestamp, refresh };
 }
