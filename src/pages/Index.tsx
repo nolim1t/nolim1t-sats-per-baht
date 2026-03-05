@@ -1,6 +1,6 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import CurrencyTab from "@/components/CurrencyTab";
-
+import XmrTab from "@/components/XmrTab";
 const currencies = [
   {
     id: "thb",
@@ -29,12 +29,13 @@ const Index = () => {
         <h1 className="text-4xl font-bold">Currency → Satoshis</h1>
 
         <Tabs defaultValue="thb" className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-4">
             {currencies.map((c) => (
               <TabsTrigger key={c.id} value={c.id}>
                 {c.label}
               </TabsTrigger>
             ))}
+            <TabsTrigger value="xmr">XMR</TabsTrigger>
           </TabsList>
           {currencies.map((c) => (
             <TabsContent key={c.id} value={c.id}>
@@ -46,6 +47,9 @@ const Index = () => {
               />
             </TabsContent>
           ))}
+          <TabsContent value="xmr">
+            <XmrTab />
+          </TabsContent>
         </Tabs>
       </div>
     </div>
