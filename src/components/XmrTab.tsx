@@ -4,12 +4,12 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 const XmrTab = () => {
-  const { data: btcData, loading: btcLoading, error: btcError, refresh: refreshBtc } =
+  const { data: btcData, loading: btcLoading, error: btcError, warning: btcWarning, refresh: refreshBtc } =
     useCachedFetch<Record<string, Record<string, number>>>(
       "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=thb",
       "btc-thb-price"
     );
-  const { data: xmrData, loading: xmrLoading, error: xmrError, refresh: refreshXmr } =
+  const { data: xmrData, loading: xmrLoading, error: xmrError, warning: xmrWarning, refresh: refreshXmr } =
     useCachedFetch<Record<string, Record<string, number>>>(
       "https://api.coingecko.com/api/v3/simple/price?ids=monero&vs_currencies=thb",
       "xmr-thb-price"
@@ -19,6 +19,7 @@ const XmrTab = () => {
 
   const loading = btcLoading || xmrLoading;
   const error = btcError || xmrError;
+  const warning = btcWarning || xmrWarning;
 
   const satsPerThb = btcData ? Math.round(100_000_000 / btcData.bitcoin.thb) : 0;
   const xmrPriceThb = xmrData ? xmrData.monero.thb : 0;
@@ -47,7 +48,12 @@ const XmrTab = () => {
   return (
     <div className="space-y-6">
       {loading && <p className="text-muted-foreground">Loading…</p>}
-      {error && <p className="text-destructive">Error: {error}</p>}
+      {error && <p className="text-destructive text-sm">{error}</p>}
+      {warning && (
+        <p className="text-sm px-3 py-2 rounded-md bg-accent text-accent-foreground">
+          {warning}
+        </p>
+      )}
 
       {btcData && xmrData && (
         <>
