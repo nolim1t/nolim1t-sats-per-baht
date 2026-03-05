@@ -4,12 +4,12 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 const XmrTab = () => {
-  const { data: btcData, loading: btcLoading, error: btcError, warning: btcWarning, refresh: refreshBtc } =
+  const { data: btcData, loading: btcLoading, error: btcError, warning: btcWarning, cacheTimestamp: btcTimestamp, refresh: refreshBtc } =
     useCachedFetch<Record<string, Record<string, number>>>(
       "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=thb",
       "btc-thb-price"
     );
-  const { data: xmrData, loading: xmrLoading, error: xmrError, warning: xmrWarning, refresh: refreshXmr } =
+  const { data: xmrData, loading: xmrLoading, error: xmrError, warning: xmrWarning, cacheTimestamp: xmrTimestamp, refresh: refreshXmr } =
     useCachedFetch<Record<string, Record<string, number>>>(
       "https://api.coingecko.com/api/v3/simple/price?ids=monero&vs_currencies=thb",
       "xmr-thb-price"
@@ -25,7 +25,7 @@ const XmrTab = () => {
   const xmrPriceThb = xmrData ? xmrData.monero.thb : 0;
   const satsPerXmr = satsPerThb && xmrPriceThb ? Math.round(xmrPriceThb * satsPerThb) : 0;
 
-  const fromCache = false; // simplified
+  const latestTimestamp = [btcTimestamp, xmrTimestamp].filter(Boolean).sort().pop() || null;
 
   const handleDownloadJSON = () => {
     const json = JSON.stringify({ sats_per_xmr: satsPerXmr }, null, 2);
@@ -65,6 +65,9 @@ const XmrTab = () => {
           </p>
           <p className="text-xs text-muted-foreground">
             (XMR/THB: {xmrPriceThb.toLocaleString()} × sats/THB: {satsPerThb.toLocaleString()})
+            {latestTimestamp && (
+              <span> · 🕐 {new Date(latestTimestamp).toLocaleString()}</span>
+            )}
           </p>
 
           <div className="space-y-2 pt-4 border-t border-border">
