@@ -74,7 +74,7 @@ const Index = () => {
           <p className="text-xs text-muted-foreground font-mono">
             ⛏️ Block height: {blockHeight.toLocaleString()}
             {blockFetchedAt && (
-              <span> · 🕐 {blockFetchedAt.toLocaleString()}</span>
+              <span> · 🕐 {blockFetchedAt.toISOString().slice(0, 16).replace('T', ' ')}</span>
             )}
           </p>
         )}
