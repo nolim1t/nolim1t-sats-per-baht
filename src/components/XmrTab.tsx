@@ -3,7 +3,7 @@ import { useCachedFetch } from "@/hooks/useCachedFetch";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-const XmrTab = () => {
+const XmrTab = ({ blockHeight }: { blockHeight: number | null }) => {
   const { data: btcData, loading: btcLoading, error: btcError, warning: btcWarning, cacheTimestamp: btcTimestamp, refresh: refreshBtc } =
     useCachedFetch<Record<string, Record<string, number>>>(
       "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=thb",
@@ -65,6 +65,7 @@ const XmrTab = () => {
           </p>
           <p className="text-xs text-muted-foreground">
             (XMR/THB: {xmrPriceThb.toLocaleString()} × sats/THB: {satsPerThb.toLocaleString()})
+            {blockHeight && <span> · ⛏️ {blockHeight.toLocaleString()}</span>}
             {latestTimestamp && (
               <span> · 🕐 {new Date(latestTimestamp).toLocaleString()}</span>
             )}
