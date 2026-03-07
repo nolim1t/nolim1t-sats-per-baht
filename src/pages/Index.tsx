@@ -23,18 +23,47 @@ const currencies = [
   },
 ];
 
+const BLOCK_CACHE_KEY = "btc-block-height";
+const BLOCK_CACHE_DURATION = 10 * 60 * 1000; // 10 minutes
+
 const Index = () => {
   const [blockHeight, setBlockHeight] = useState<number | null>(null);
   const [blockFetchedAt, setBlockFetchedAt] = useState<Date | null>(null);
 
   useEffect(() => {
+    // Check cache first
+    try {
+      const cached = localStorage.getItem(BLOCK_CACHE_KEY);
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (Date.now() - parsed.timestamp < BLOCK_CACHE_DURATION) {
+          setBlockHeight(parsed.height);
+          setBlockFetchedAt(new Date(parsed.timestamp));
+          return;
+        }
+      }
+    } catch {}
+
     fetch("https://mempool.space/api/blocks/tip/height")
       .then((res) => res.ok ? res.text() : Promise.reject())
       .then((text) => {
-        setBlockHeight(Number(text));
-        setBlockFetchedAt(new Date());
+        const height = Number(text);
+        const now = Date.now();
+        setBlockHeight(height);
+        setBlockFetchedAt(new Date(now));
+        localStorage.setItem(BLOCK_CACHE_KEY, JSON.stringify({ height, timestamp: now }));
       })
-      .catch(() => setBlockHeight(null));
+      .catch(() => {
+        // Fall back to cached data
+        try {
+          const cached = localStorage.getItem(BLOCK_CACHE_KEY);
+          if (cached) {
+            const parsed = JSON.parse(cached);
+            setBlockHeight(parsed.height);
+            setBlockFetchedAt(new Date(parsed.timestamp));
+          }
+        } catch {}
+      });
   }, []);
 
   return (
