@@ -55,7 +55,7 @@ const CurrencyTab = ({ currency, currencyCode, apiUrl, cacheKey, blockHeight }: 
             {fromCache ? "📦 Served from cache" : "🌐 Fresh fetch"}
             {blockHeight && <span> · ⛏️ {blockHeight.toLocaleString()}</span>}
             {cacheTimestamp && (
-              <span> · 🕐 {new Date(cacheTimestamp).toLocaleString()}</span>
+              <span> · 🕐 {new Date(cacheTimestamp).toISOString().slice(0, 16).replace('T', ' ')}</span>
             )}
           </p>
 

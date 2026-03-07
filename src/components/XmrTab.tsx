@@ -67,7 +67,7 @@ const XmrTab = ({ blockHeight }: { blockHeight: number | null }) => {
             (XMR/THB: {xmrPriceThb.toLocaleString()} × sats/THB: {satsPerThb.toLocaleString()})
             {blockHeight && <span> · ⛏️ {blockHeight.toLocaleString()}</span>}
             {latestTimestamp && (
-              <span> · 🕐 {new Date(latestTimestamp).toLocaleString()}</span>
+              <span> · 🕐 {new Date(latestTimestamp).toISOString().slice(0, 16).replace('T', ' ')}</span>
             )}
           </p>
 
