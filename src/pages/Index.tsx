@@ -44,6 +44,9 @@ const Index = () => {
         {blockHeight && (
           <p className="text-xs text-muted-foreground font-mono">
             ⛏️ Block height: {blockHeight.toLocaleString()}
+            {blockFetchedAt && (
+              <span> · 🕐 {blockFetchedAt.toLocaleString()}</span>
+            )}
           </p>
         )}
 
