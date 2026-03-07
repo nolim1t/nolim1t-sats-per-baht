@@ -8,9 +8,10 @@ interface CurrencyTabProps {
   currencyCode: string;
   apiUrl: string;
   cacheKey: string;
+  blockHeight: number | null;
 }
 
-const CurrencyTab = ({ currency, currencyCode, apiUrl, cacheKey }: CurrencyTabProps) => {
+const CurrencyTab = ({ currency, currencyCode, apiUrl, cacheKey, blockHeight }: CurrencyTabProps) => {
   const { data, loading, error, warning, fromCache, cacheTimestamp, refresh } =
     useCachedFetch<Record<string, Record<string, number>>>(apiUrl, cacheKey);
   const [amount, setAmount] = useState("");
@@ -52,6 +53,7 @@ const CurrencyTab = ({ currency, currencyCode, apiUrl, cacheKey }: CurrencyTabPr
           </p>
           <p className="text-xs text-muted-foreground">
             {fromCache ? "📦 Served from cache" : "🌐 Fresh fetch"}
+            {blockHeight && <span> · ⛏️ {blockHeight.toLocaleString()}</span>}
             {cacheTimestamp && (
               <span> · 🕐 {new Date(cacheTimestamp).toLocaleString()}</span>
             )}

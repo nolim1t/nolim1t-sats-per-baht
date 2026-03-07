@@ -95,11 +95,12 @@ const Index = () => {
                 currencyCode={c.id}
                 apiUrl={c.url}
                 cacheKey={c.cacheKey}
+                blockHeight={blockHeight}
               />
             </TabsContent>
           ))}
           <TabsContent value="xmr">
-            <XmrTab />
+            <XmrTab blockHeight={blockHeight} />
           </TabsContent>
         </Tabs>
       </div>
