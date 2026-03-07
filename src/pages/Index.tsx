@@ -25,11 +25,15 @@ const currencies = [
 
 const Index = () => {
   const [blockHeight, setBlockHeight] = useState<number | null>(null);
+  const [blockFetchedAt, setBlockFetchedAt] = useState<Date | null>(null);
 
   useEffect(() => {
     fetch("https://mempool.space/api/blocks/tip/height")
       .then((res) => res.ok ? res.text() : Promise.reject())
-      .then((text) => setBlockHeight(Number(text)))
+      .then((text) => {
+        setBlockHeight(Number(text));
+        setBlockFetchedAt(new Date());
+      })
       .catch(() => setBlockHeight(null));
   }, []);
 
